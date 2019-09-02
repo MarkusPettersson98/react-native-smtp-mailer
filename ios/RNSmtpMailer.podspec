@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.description  = <<-DESC
                   RNSmtpMailer
                    DESC
-  s.homepage     = "https://github.com/MarkusPettersson98/react-native-smtp-mailer"
+  s.homepage     = "https://github.com/angelos3lex/react-native-smtp-mailer"
   s.license      = "MIT"
   # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
   s.author             = { "author" => "author@domain.cn" }
