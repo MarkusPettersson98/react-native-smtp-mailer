@@ -17,7 +17,7 @@ RCT_EXPORT_METHOD(sendMail:(NSDictionary *)obj resolver:(RCTPromiseResolveBlock)
     NSString *username = [RCTConvert NSString:obj[@"username"]];
     NSString *password = [RCTConvert NSString:obj[@"password"]];
     NSString *fromEmail = [RCTConvert NSString:obj[@"from"]];
-    NSString *recipients = [RCTConvert NSString:obj[@"recipients"]];
+    NSArray *recipients = [RCTConvert NSArray:obj[@"recipients"]];
     NSArray *bcc = [RCTConvert NSArray:obj[@"bcc"]];
     NSString *subject = [RCTConvert NSString:obj[@"subject"]];
     NSString *body = [RCTConvert NSString:obj[@"htmlBody"]];
@@ -37,19 +37,28 @@ RCT_EXPORT_METHOD(sendMail:(NSDictionary *)obj resolver:(RCTPromiseResolveBlock)
     MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
     MCOAddress *from = [MCOAddress addressWithDisplayName:nil
                                                 mailbox:fromEmail];
-    MCOAddress *to = [MCOAddress addressWithDisplayName:nil
-                                              mailbox:recipients];
+    [[builder header] setFrom:from];
+    
+
+    NSMutableArray *to = [[NSMutableArray alloc] init];    
+    for(NSString *toAddress in recipients) {
+        MCOAddress *newAddress = [MCOAddress addressWithMailbox:toAddress];
+        [to addObject:newAddress];
+    }
+    // Set recipients in mailcore
+    [[builder header] setTo:to];
+
+
+
 
     NSMutableArray *bccs = [[NSMutableArray alloc] init];
-    int bccCount = [bcc count];
-    for(int i = 0; i < bccCount; i++){
-          MCOAddress *newAddress = [MCOAddress addressWithMailbox:[bcc objectAtIndex:i]];
-          [bccs addObject:newAddress];
+    for(NSString *bccAddress in bcc) {
+        MCOAddress *newAddress = [MCOAddress addressWithMailbox:bccAddress];
+        [bccs addObject:newAddress];
     }
-
-    [[builder header] setFrom:from];
-    [[builder header] setTo:@[to]];
+    // Set bccs in mailcore
     [[builder header] setBcc:bccs];
+    
 
     [[builder header] setSubject:subject];
     [builder setHTMLBody:body];

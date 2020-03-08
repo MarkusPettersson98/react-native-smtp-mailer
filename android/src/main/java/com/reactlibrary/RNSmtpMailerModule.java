@@ -27,12 +27,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.BodyPart;
 import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 public class RNSmtpMailerModule extends ReactContextBaseJavaModule {
@@ -59,7 +54,7 @@ public class RNSmtpMailerModule extends ReactContextBaseJavaModule {
             String username = obj.getString("username");
             String password = obj.getString("password");
             String from = obj.getString("from");
-            String recipients = obj.getString("recipients");
+            ReadableArray recipients =  obj.getArray("recipients");
             ReadableArray bcc = obj.hasKey("bcc") ? obj.getArray("bcc") : null;
             String subject = obj.getString("subject");
             String body = obj.getString("htmlBody");
@@ -124,8 +119,8 @@ class MailSender extends javax.mail.Authenticator {
         return new PasswordAuthentication(user, password);
     }
 
-    public synchronized void sendMail(String subject, String body, String sender, String recipients, ReadableArray bcc,
-          ReadableArray attachmentPaths, ReadableArray attachmentNames, ReadableArray attachmentTypes) throws Exception {
+    public synchronized void sendMail(String subject, String body, String sender, ReadableArray recipients, ReadableArray bcc,
+                                      ReadableArray attachmentPaths, ReadableArray attachmentNames, ReadableArray attachmentTypes) throws Exception {
         MimeMessage message = new MimeMessage(session);
         Transport transport = session.getTransport();
         BodyPart messageBodyPart = new MimeBodyPart();
@@ -138,10 +133,10 @@ class MailSender extends javax.mail.Authenticator {
 
         _multipart.addBodyPart(messageBodyPart);
 
-        if (recipients.indexOf(',') > 0) {
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
-        } else {
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
+        for(int i = 0; i < recipients.size(); i++) {
+            String recipient = recipients.getString(i);
+            InternetAddress recipientAddress = new InternetAddress(recipient);
+            message.setRecipient(Message.RecipientType.TO, recipientAddress);
         }
 
         if (bcc != null) {
@@ -150,16 +145,15 @@ class MailSender extends javax.mail.Authenticator {
             }
         }
 
-        for (int i = 0; i < attachmentPaths.size(); i++) {
+        for (int index = 0; index < attachmentPaths.size(); index++) {
             messageBodyPart = new MimeBodyPart();
-            DataSource source = new FileDataSource(attachmentPaths.getString(i));
+            DataSource source = new FileDataSource(attachmentPaths.getString(index));
             messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(attachmentNames.getString(i));
-            if (attachmentTypes.getString(i) == "img") {
+            messageBodyPart.setFileName(attachmentNames.getString(index));
+            if (attachmentTypes.getString(index) == "img") {
                 messageBodyPart.setHeader("Content-ID", "<image>");
             }
-            _multipart.addBodyPart(messageBodyPart);
-            messageBodyPart = new MimeBodyPart();
+            _multipart.addBodyPart(messageBodyPart, index + 1);
         }
 
         message.setContent(_multipart);
@@ -179,12 +173,12 @@ class JSSEProvider extends Provider {
         AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
             public Void run() {
                 put("SSLContext.TLS",
-                      "org.apache.harmony.xnet.provider.jsse.SSLContextImpl");
+                        "org.apache.harmony.xnet.provider.jsse.SSLContextImpl");
                 put("Alg.Alias.SSLContext.TLSv1", "TLS");
                 put("KeyManagerFactory.X509",
-                      "org.apache.harmony.xnet.provider.jsse.KeyManagerFactoryImpl");
+                        "org.apache.harmony.xnet.provider.jsse.KeyManagerFactoryImpl");
                 put("TrustManagerFactory.X509",
-                      "org.apache.harmony.xnet.provider.jsse.TrustManagerFactoryImpl");
+                        "org.apache.harmony.xnet.provider.jsse.TrustManagerFactoryImpl");
                 return null;
             }
         });
