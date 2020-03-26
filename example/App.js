@@ -3,59 +3,114 @@
  * https://github.com/facebook/react-native
  *
  * @format
- * @flow
+ * @flow strict-local
  */
 
-import React, { Component } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import RNSmtpMailer from "react-native-smtp-mailer";
-import RNFS from "react-native-fs";
+import React from 'react';
+import {
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  Button,
+} from 'react-native';
 
-export default class App extends Component {
-  sendEmail = () => {
-    RNSmtpMailer.sendMail({
-      mailhost: "smtp.gmail.com",
-      port: "465",
-      ssl: true, //if ssl: false, TLS is enabled,**note:** in iOS TLS/SSL is determined automatically, so either true or false is the same
-      username: "username",
-      password: "password",
-      from: "fromEmail",
-      recipients: "toEmail1,toEmail2",
-      subject: "subject",
-      htmlBody: "<h1>header</h1><p>body</p>",
-      attachmentPaths: ["pathToFile1.png","pathToFile2.txt","pathToFile3.csv"],
-      attachmentNames: ["image.jpg", "firstFile.txt", "secondFile.csv"],//only used in android, these are renames of original files. in ios filenames will be same as specified in path. In ios-only application, leave it empty: attachmentNames:[] 
-      attachmentTypes: ["img", "txt", "csv"]//needed for android, in ios-only application, leave it empty: attachmentTypes:[]
-    })
-      .then(success => alert(success))
-      .catch(err => alert(err));
-  };
+import {Header, Colors} from 'react-native/Libraries/NewAppScreen';
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to Smtp Mailer!</Text>
-        <Button title="Send Email" onPress={this.sendEmail} />
-      </View>
-    );
-  }
-}
+import RNSmtpMailer from 'react-native-smtp-mailer';
+
+sendEmail = async () => {
+  RNSmtpMailer.sendMail({
+    mailhost: 'smtp.gmail.com',
+    port: '465',
+    ssl: true, //if ssl: false, TLS is enabled,**note:** in iOS TLS/SSL is determined automatically, so either true or false is the same
+    username: 'some-email@test.com',
+    password: 'supersecret123',
+    from: 'Gentle sir!',
+    recipients: ['grandma@gmail.com'],
+    subject: 'test',
+    htmlBody: '<h1>header goes here </h1><p>body goes there</p>',
+    attachmentPaths: [],
+    attachmentNames: [], //only used in android, these are renames of original files. in ios filenames will be same as specified in path. In ios-only application, leave it empty: attachmentNames:[]
+    attachmentTypes: [], //needed for android, in ios-only application, leave it empty: attachmentTypes:[]
+  })
+    .then(success => alert(JSON.stringify(success)))
+    .catch(err => alert(JSON.stringify(err)));
+};
+
+const App: () => React$Node = () => {
+  return (
+    <View>
+      <SafeAreaView>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={styles.scrollView}>
+          <Header />
+          {global.HermesInternal == null ? null : (
+            <View style={styles.engine}>
+              <Text style={styles.footer}>Engine: Hermes</Text>
+            </View>
+          )}
+          <View style={styles.body}>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Step One</Text>
+              <Text style={styles.sectionDescription}>
+                Edit <Text style={styles.highlight}>App.js</Text> and update
+                sendEmail() with your credentials and then come back to press
+                the magic button!
+              </Text>
+            </View>
+            <Button
+              title="Send Email"
+              onPress={async () => {
+                await sendEmail();
+              }}
+            />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
+  scrollView: {
+    backgroundColor: Colors.lighter,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10
+  engine: {
+    position: 'absolute',
+    right: 0,
   },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5
-  }
+  body: {
+    backgroundColor: Colors.white,
+  },
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: Colors.black,
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '400',
+    color: Colors.dark,
+  },
+  highlight: {
+    fontWeight: '700',
+  },
+  footer: {
+    color: Colors.dark,
+    fontSize: 12,
+    fontWeight: '600',
+    padding: 4,
+    paddingRight: 12,
+    textAlign: 'right',
+  },
 });
+
+export default App;
