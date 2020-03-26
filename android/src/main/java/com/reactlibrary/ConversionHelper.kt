@@ -1,6 +1,5 @@
 package com.reactlibrary
 
-import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.mailercore.Attachment
 import com.mailercore.Mail
@@ -44,28 +43,9 @@ object ConversionHelper {
         )
     }
 
-
-    private fun ReadableMap.getStringList(key: String): List<String> {
-        return if (this.hasKey(key)) {
-            this.getArray(key).toIterable().toList()
-        };
-        else
-            emptyList();
-    }
-
-    private fun ReadableArray.toIterable(): Iterable<String> {
-        val size = this.size()
-        val accumulator = mutableListOf<String>()
-        for (index in size - 1 downTo 0) {
-            val value = this.getString(index)
-            value?.let { accumulator.add(it) }
-        }
-        return accumulator
-    }
-
     private fun <A, B, C> zipThree(list1: List<A>, list2: List<B>, list3: List<C>): List<Triple<A, B, C>> {
         val ziptmp = list1.zip(list2).zip(list3)
-        return ziptmp.fold(mutableListOf<Triple<A, B, C>>()) { acc, triple ->
+        return ziptmp.fold(mutableListOf()) { acc, triple ->
             val first = triple.first.first
             val second = triple.first.second
             val third = triple.second
