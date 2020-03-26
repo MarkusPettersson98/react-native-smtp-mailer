@@ -15,7 +15,12 @@
   ],
   "author": "angeloslex, Markus Pettersson",
   "license": "MIT",
+  "devDependencies": {
+    "react-native": "^0.47.0",
+    "react": "^16.0.0"
+  },
   "peerDependencies": {
-    "react-native": "^0.47.0"
+    "react-native": "^0.47.0",
+    "react": "^16.0.0"
   }
 }
