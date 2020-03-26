@@ -6,8 +6,8 @@ import com.facebook.react.bridge.ReadableMap
 
 fun ReadableMap.getStringList(key: String): List<String> {
     return if (this.hasKey(key)) {
-        this.getArray(key).toIterable().toList()
-    };
+        this.getArray(key)?.toIterable()?.toList().orEmpty()
+    }
     else
         emptyList();
 }

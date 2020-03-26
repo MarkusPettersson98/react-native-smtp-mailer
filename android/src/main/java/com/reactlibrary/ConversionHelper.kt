@@ -7,11 +7,11 @@ import com.mailercore.MailSender
 
 object ConversionHelper {
     fun toMail(maildata: ReadableMap): Mail {
-        val from = maildata.getString("from")
+        val from = maildata.getString("from")!!
         val recipients = maildata.getStringList("recipients")
         val bcc: List<String> = maildata.getStringList("bcc")
-        val subject = maildata.getString("subject")
-        val body = maildata.getString("htmlBody")
+        val subject = maildata.getString("subject")!!
+        val body = maildata.getString("htmlBody")!!
         val attachmentPaths = maildata.getStringList("attachmentPaths")
         val attachmentNames = maildata.getStringList("attachmentNames")
         val attachmentTypes = maildata.getStringList("attachmentTypes")
@@ -32,11 +32,11 @@ object ConversionHelper {
     }
 
     fun toMailSender(maildata: ReadableMap): MailSender {
-        val mailhost = maildata.getString("mailhost")
-        val port = maildata.getString("port")
+        val mailhost = maildata.getString("mailhost")!!
+        val port = maildata.getString("port")!!
         val ssl = maildata.getBoolean("ssl")
-        val username = maildata.getString("username")
-        val password = maildata.getString("password")
+        val username = maildata.getString("username")!!
+        val password = maildata.getString("password")!!
         return MailSender(
                 mailhost = mailhost, port = port, ssl = ssl,
                 username = username, password = password
