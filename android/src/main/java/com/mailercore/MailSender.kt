@@ -2,7 +2,6 @@ package com.mailercore
 
 import java.util.*
 import java.security.*
-import java.security.Provider
 import javax.activation.*
 import javax.mail.*
 import javax.mail.internet.*
@@ -12,7 +11,7 @@ class MailSender(val mailhost: String, val username: String, val password: Strin
 
     companion object {
         @JvmStatic
-        val securityProvider: Int = Security.addProvider(JSSEProvider())
+        val securityProvider: Int = Security.addProvider(SecurityProvider())
     }
 
     private val session: Session
@@ -87,26 +86,6 @@ class MailSender(val mailhost: String, val username: String, val password: Strin
         properties.setProperty("mail.smtp.quitwait", "false")
 
         return properties
-    }
-
-
-    internal class JSSEProvider : Provider("HarmonyJSSE", 1.0, "Harmony JSSE Provider") {
-        companion object {
-            private const val serialVersionUID = 1L
-        }
-
-        init {
-            AccessController.doPrivileged<Void>(PrivilegedAction<Void?> {
-                put("SSLContext.TLS",
-                        "org.apache.harmony.xnet.provider.jsse.SSLContextImpl")
-                put("Alg.Alias.SSLContext.TLSv1", "TLS")
-                put("KeyManagerFactory.X509",
-                        "org.apache.harmony.xnet.provider.jsse.KeyManagerFactoryImpl")
-                put("TrustManagerFactory.X509",
-                        "org.apache.harmony.xnet.provider.jsse.TrustManagerFactoryImpl")
-                null
-            })
-        }
     }
 
 }
