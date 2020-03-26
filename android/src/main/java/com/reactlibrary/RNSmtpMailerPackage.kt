@@ -9,11 +9,6 @@ class RNSmtpMailerPackage : ReactPackage {
         return listOf<NativeModule>(RNSmtpMailerModule(reactContext))
     }
 
-    // Deprecated from RN 0.47
-    override fun createJSModules(): List<Class<out JavaScriptModule?>> {
-        return emptyList()
-    }
-
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
         return emptyList()
     }
