@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		288B6731242D5D9300C0181C /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 288B671A242D5D0400C0181C /* libReact.a */; };
+		288B6735242D623D00C0181C /* RNSmtpMailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 288B6734242D623D00C0181C /* RNSmtpMailer.swift */; };
 		B3E7B58A1CC2AC0600A0062D /* RNSmtpMailer.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNSmtpMailer.m */; };
 /* End PBXBuildFile section */
 
@@ -113,6 +114,8 @@
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNSmtpMailer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNSmtpMailer.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		288B670A242D5D0400C0181C /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		288B6733242D623C00C0181C /* RNSmtpMailer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNSmtpMailer-Bridging-Header.h"; sourceTree = "<group>"; };
+		288B6734242D623D00C0181C /* RNSmtpMailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNSmtpMailer.swift; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNSmtpMailer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNSmtpMailer.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNSmtpMailer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSmtpMailer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -167,10 +170,12 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				288B6734242D623D00C0181C /* RNSmtpMailer.swift */,
 				B3E7B5881CC2AC0600A0062D /* RNSmtpMailer.h */,
 				B3E7B5891CC2AC0600A0062D /* RNSmtpMailer.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				288B6709242D5D0400C0181C /* Frameworks */,
+				288B6733242D623C00C0181C /* RNSmtpMailer-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -205,6 +210,7 @@
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
+						LastSwiftMigration = 1130;
 					};
 				};
 			};
@@ -325,6 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3E7B58A1CC2AC0600A0062D /* RNSmtpMailer.m in Sources */,
+				288B6735242D623D00C0181C /* RNSmtpMailer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,6 +422,7 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -423,16 +431,21 @@
 					"$(SRCROOT)/../example/ios/Pods/mailcore2-ios/**",
 					"$(SRCROOT)/../../../ios/Pods/mailcore2-ios/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNSmtpMailer;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNSmtpMailer-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -441,10 +454,13 @@
 					"$(SRCROOT)/../example/ios/Pods/mailcore2-ios/**",
 					"$(SRCROOT)/../../../ios/Pods/mailcore2-ios/**",
 				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = RNSmtpMailer;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNSmtpMailer-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
