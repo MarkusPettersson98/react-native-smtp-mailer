@@ -1,120 +1,187 @@
-# react-native-smtp-mailer
+# react-native-simple-mailer
+
+A simple library enabling non-obtrusive mailing from React Native!
 
 ## Getting started
 
-`$ npm install react-native-smtp-mailer --save`
+TODO
 
-### Mostly automatic installation
+## Installation
 
-`$ react-native link react-native-smtp-mailer`
+TODO
 
-### Manual installation
+Install this package with with `npm` or `yarn` !
 
-#### iOS
+This library has a peer-dependency on `react-native ^0.47.0` .
 
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-smtp-mailer` and add `RNSmtpMailer.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libRNSmtpMailer.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
+### iOS
 
-#### Android
-
-1. Open up `android/app/src/main/java/[...]/MainApplication.java`
-
-- Add `import com.reactlibrary.RNSmtpMailerPackage;` to the imports at the top of the file
-- Add `new RNSmtpMailerPackage()` to the list returned by the `getPackages()` method
-
-2. Append the following lines to `android/settings.gradle`:
-   ```
-   include ':react-native-smtp-mailer'
-   project(':react-native-smtp-mailer').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-smtp-mailer/android')
-   ```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-   ```
-     implementation project(':react-native-smtp-mailer')
-   ```
-
-## Extra steps
+Make sure to run `pod install` inside of your project's ios folder! This library depends on `mailcore2-ios` for the bridge between React Native and iOS.
 
 ### Android
 
-Maybe you need to add (if you encounter error with mimetypes during build), in <b><i>android/app/build.gradle:</i></b>
+No extra steps are necessary for Android, just install and go!
 
-```
-android {
-	...
-	packagingOptions {
-		exclude 'META-INF/mimetypes.default'
-		exclude 'META-INF/mailcap.default'
-	}
-}
-```
+### Problems?
 
-### Ios
-
-For iOS, inside ios folder, create a Podfile with `pod init` and add (or just add it on your existing Podfile):
-
-```
-pod 'mailcore2-ios'
-```
-
-Then run:
-
-```
-pod install
-```
-
-Then, in RNSmtpMailer.xcodeproj, in build settings, in Header Search Paths, add:
-
-```
-$(SRCROOT)/../../../ios/Pods/mailcore2-ios
-```
+See docs
 
 ## Usage
 
-```javascript
+``` javascript
 import RNSmtpMailer from "react-native-smtp-mailer";
 
 RNSmtpMailer.sendMail({
-  mailhost: "smtp.gmail.com",
-  port: "465",
-  ssl: true, //if ssl: false, TLS is enabled,**note:** in iOS TLS/SSL is determined automatically, so either true or false is the same
-  username: "usernameEmail",
-  password: "password",
-  from: "fromEmail",
-  recipients: "toEmail1,toEmail2",
-  bcc: ["bccEmail1", "bccEmail2"], //completely optional
-  subject: "subject",
-  htmlBody: "<h1>header</h1><p>body</p>",
-  attachmentPaths: [
-    RNFS.ExternalDirectoryPath + "/image.jpg",
-    RNFS.DocumentDirectoryPath + "/test.txt",
-    RNFS.DocumentDirectoryPath + "/test2.csv",
-    RNFS.DocumentDirectoryPath + "/pdfFile.pdf",
-    RNFS.DocumentDirectoryPath + "/zipFile.zip",
-    RNFS.DocumentDirectoryPath + "/image.png"
-  ],
-  attachmentNames: [
-    "image.jpg",
-    "firstFile.txt",
-    "secondFile.csv",
-    "pdfFile.pdf",
-    "zipExample.zip",
-    "pngImage.png"
-  ], //only used in android, these are renames of original files. in ios filenames will be same as specified in path. In ios-only application, leave it empty: attachmentNames:[]
-  attachmentTypes: ["img", "txt", "csv", "pdf", "zip", "img"] //needed for android, in ios-only application, leave it empty: attachmentTypes:[]. Generally every img(either jpg, png, jpeg or whatever) file should have "img", and every other file should have its corresponding type.
-})
-  .then(success => console.log(success))
-  .catch(err => console.log(err));
+        // Required fields
+        username: "mail-to-send-from@gmail.com",
+        password: "password-for-above-mail",
+        from: "address-sending-this-mail", // Probably the same as `username` 
+        recipients: ["reciever1@gmail.com, reciever2@outlook.com"],
+        subject: "subject",
+        htmlBody: "<h1>header</h1><p>body</p>",
+
+        // Optional fields
+        mailhost: "smtp.gmail.com", // Defaults to "smtp.gmail.com" if nothing is specified
+        port: 465, // Defaults to 465 if nothing is specified
+        ssl: true, // defaults to true if nothing is specified. If ssl is set to false, TLS is enabled.
+
+        bcc: ["bccEmail1", "bccEmail2"],
+
+        attachmentPaths: [
+            RNFS.ExternalDirectoryPath + "/image.jpg",
+            RNFS.DocumentDirectoryPath + "/test.txt",
+            RNFS.DocumentDirectoryPath + "/test2.csv",
+            RNFS.DocumentDirectoryPath + "/pdfFile.pdf",
+            RNFS.DocumentDirectoryPath + "/zipFile.zip",
+            RNFS.DocumentDirectoryPath + "/image.png"
+        ],
+        attachmentNames: [ // Names of the attached files
+            "image.jpg",
+            "firstFile.txt",
+            "secondFile.csv",
+            "pdfFile.pdf",
+            "zipExample.zip",
+            "pngImage.png"
+        ],
+        attachmentTypes: ["img", "txt", "csv", "pdf", "zip", "img"], // Necessary to preserve the order as the files in attachmentPaths
+    })
+    .then(success => console.log(success))
+    .catch(err => console.log(err));
 ```
 
-RNFS is from <a href="https://github.com/itinance/react-native-fs">react-native-fs</a> library, used just to demonstrate a way of accessing files in phone filesystem.
+### Note
+
+RNFS is from <a href="https://github.com/itinance/react-native-fs">react-native-fs</a> library, used just to demonstrate a way of accessing files on the phones local filesystem.
+
+### Breakdown
+
+#### Required arguments
+
+##### `username` 
+
+`type: String` 
+
+The username of the email account to send the mail from. The library needs this to authenticate against the mail server.
+
+##### `password` 
+
+`type: String` 
+
+Provide the password for the host email account. The library needs this to authenticate against the
+mail server.
+
+##### `from` 
+
+`type: String` 
+
+Specify from which email to send the mail from. This is probably the same as `username` .
+
+##### `recipients` 
+
+`type: String[]` 
+
+All the recievers of your mail. You can specify one or more recievers in the list.
+
+#### `subject` 
+
+`type: String` 
+
+The visible subject of the mail
+
+#### `htmlBody` 
+
+`type: String` 
+
+The text provided in the mail. As the name of this fields conveys you can specify custom html to be
+displayed as the message of your email.
+
+#### Optional arguments
+
+##### `mailhost` 
+
+`type: String` 
+
+`default value: "smtp.gmail.com"` 
+
+The mail server that hosts the `username` email address. Depending on your situation you might need to
+change this, e.g.if you are using Microsoft Outlook.
+
+##### `port` 
+
+`type: Integer (Javascript Number)` 
+
+`default value: 465` 
+
+The port which the mail server listens to. Default for Google's mail servers is port 465. Again, this 
+might be dependant on your specific mail server.
+
+##### `ssl` 
+
+`type: boolean` 
+
+`default value: true` 
+
+SSL is recommended to have enabled. It allows for a secure encrypted communication between the mobile client and the mail server which is authenticated against.
+
+##### `bcc` 
+
+`type: String[]` 
+
+`default value: []` 
+
+Allows to specify recievers which should be concealed / not visible to other people in the communication.
+
+##### `attachmentPaths` 
+
+`type: String[]` 
+
+`default value: []` 
+
+Paths to files on the local file system.
+
+##### `attachmentNames` 
+
+`type: String[]` 
+
+`default value: []` 
+
+Only used in Android, these are renames of original files. In iOS filenames will be same as specified in path. In iOS-only application, `attachmentNames` can be left unprovided or empty.
+
+##### `attachmentTypes` 
+
+`type: String[]` 
+
+`default value: []` 
+
+Only used in Android.
+
+In iOS-only application, you may leave `attachmentTypes` empty. Generally every image (either jpg, png, jpeg etc..) file should have "img", and every other file should have its corresponding type.
 
 ### Usage with Proguard
 
 Add the following into android/app/proguard-rules.pro
 
-```
+``` 
 -dontshrink
 -keep class javax.** {*;}
 -keep class com.sun.** {*;}
@@ -125,3 +192,4 @@ Add the following into android/app/proguard-rules.pro
 -dontwarn javax.security.**
 -dontwarn javax.activation.**
 ```
+
