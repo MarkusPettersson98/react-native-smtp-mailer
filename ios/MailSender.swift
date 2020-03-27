@@ -13,7 +13,8 @@ struct Mail {
     let recipients: [String]
     let subject: String
     let body: String
-    let bcc: [String]
+    let cc: [String]?
+    let bcc: [String]?
     let attachments: [Attachment]
 }
 

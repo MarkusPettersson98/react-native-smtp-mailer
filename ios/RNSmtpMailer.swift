@@ -32,8 +32,15 @@ class RNSmtpMailer : NSObject {
         let builder = MCOMessageBuilder()
         //TODO: Maybe add displayname in future? E.g. MCOAddress(displayName: "Rool", mailbox: "itsrool@gmail.com")]
         builder.header.from = MCOAddress(mailbox: mail.from) //TDO: Same as above
+        // Add recipients
         builder.header.to = mail.recipients.compactMap { MCOAddress(mailbox: $0) } // Remove any possible nil values
-        builder.header.bcc = mail.bcc.compactMap { MCOAddress(mailbox: $0) }
+        if let ccs = mail.cc {
+            builder.header.cc = ccs.compactMap { MCOAddress(mailbox: $0) }
+        }
+        if let bccs = mail.bcc {
+            builder.header.bcc = bccs.compactMap { MCOAddress(mailbox: $0) }
+        }
+
 
         builder.header.subject = mail.subject
         builder.htmlBody = mail.body
@@ -74,8 +81,9 @@ func toMail(maildata: [String : Any]) -> Mail {
     let attachments: [Attachment] = zip(attachmentNames, zip(attachmentPaths, attachmentTypes))
         .map { Attachment(name: $0.0 , path: $0.1.0, type: $0.1.1) }
     
-    // If bcc is nothing, just pass empty array
-    let bcc: [String] = RCTConvert.nsStringArray(maildata["bcc"]) ?? [String]()
+    // Optional arguments
+    let cc: [String]? = maildata["cc"] as! [String]?
+    let bcc: [String]? = maildata["bcc"] as! [String]?
     
     // Required
     let from: String = RCTConvert.nsString(maildata["from"])
@@ -88,6 +96,7 @@ func toMail(maildata: [String : Any]) -> Mail {
         recipients: recipients,
         subject: subject,
         body: body,
+        cc: cc,
         bcc: bcc,
         attachments: attachments
     )
