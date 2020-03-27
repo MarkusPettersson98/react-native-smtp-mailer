@@ -10,9 +10,10 @@ object ConversionHelper {
     fun toMail(maildata: ReadableMap): Mail {
         val from = maildata.getString("from")!!
         val recipients = maildata.getStringList("recipients")
-        val bcc: List<String> = maildata.getStringList("bcc")
         val subject = maildata.getString("subject")!!
         val body = maildata.getString("htmlBody")!!
+        val cc: List<String> = maildata.getStringList("cc")
+        val bcc: List<String> = maildata.getStringList("bcc")
         val attachmentPaths = maildata.getStringList("attachmentPaths")
         val attachmentNames = maildata.getStringList("attachmentNames")
         val attachmentTypes = maildata.getStringList("attachmentTypes")
@@ -23,7 +24,7 @@ object ConversionHelper {
 
         return Mail(
                 from = from, recipients = recipients, subject = subject,
-                body = body, bcc = bcc, attachments = attachments
+                body = body, cc = cc, bcc = bcc, attachments = attachments
         )
     }
 

@@ -44,7 +44,8 @@ class MailSender(val username: String, val password: String, mailconfig: MailCon
         multipart.addBodyPart(messageBodyPart)
         // Add recipients
         mail.recipients.map { InternetAddress(it) }.also { message.setRecipients(Message.RecipientType.TO, it.toTypedArray()) }
-        mail.bcc.map { InternetAddress(it) }.also { message.addRecipients(Message.RecipientType.BCC, it.toTypedArray()) }
+        mail.cc?.map { InternetAddress(it) }.also { message.addRecipients(Message.RecipientType.CC, it?.toTypedArray()) }
+        mail.bcc?.map { InternetAddress(it) }.also { message.addRecipients(Message.RecipientType.BCC, it?.toTypedArray()) }
         // Add any attachments
         multipart.addAttachments(mail.attachments)
 
@@ -68,8 +69,6 @@ class MailSender(val username: String, val password: String, mailconfig: MailCon
         }
         this.addBodyPart(messageBodyPart)
     }
-
-
 
 
 }
