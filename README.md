@@ -45,7 +45,8 @@ RNSmtpMailer.sendMail({
         port: 465, // Defaults to 465 if nothing is specified
         ssl: true, // defaults to true if nothing is specified. If ssl is set to false, TLS is enabled.
 
-        bcc: ["bccEmail1", "bccEmail2"],
+        cc: ["ccEmail1@gmail.com", "ccEmail2@outlook.com"],
+        bcc: ["bccEmail1@gmail.com", "bccEmail2@outlook.com"],
 
         attachmentPaths: [
             RNFS.ExternalDirectoryPath + "/image.jpg",
@@ -142,6 +143,14 @@ might be dependant on your specific mail server.
 `default value: true` 
 
 SSL is recommended to have enabled. It allows for a secure encrypted communication between the mobile client and the mail server which is authenticated against.
+
+##### `cc` 
+
+`type: String[]` 
+
+`default value: []` 
+
+Allows to specify recievers which should recieve a copy of the mail.
 
 ##### `bcc` 
 
