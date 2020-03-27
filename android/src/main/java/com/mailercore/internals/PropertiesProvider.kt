@@ -10,12 +10,11 @@ class PropertiesProvider(private val mailconfig: MailConfig) {
         properties.setProperty("mail.transport.protocol", "smtp")
         properties.setProperty("mail.host", mailconfig.mailhost)
         properties.setProperty("mail.smtp.auth", "true")
-        properties.setProperty("mail.smtp.port", mailconfig.port)
-        properties.setProperty("mail.smtp.socketFactory.port", mailconfig.port)
-        if (mailconfig.ssl) {
-            properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory")
-        } else {
-            properties.setProperty("mail.smtp.starttls.enable", "true")
+        properties.setProperty("mail.smtp.port", mailconfig.port.toString())
+        properties.setProperty("mail.smtp.socketFactory.port", mailconfig.port.toString())
+        when (mailconfig.ssl) {
+            true -> properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory")
+            else -> properties.setProperty("mail.smtp.starttls.enable", "true")
         }
         properties.setProperty("mail.smtp.socketFactory.fallback", "false")
         properties.setProperty("mail.smtp.quitwait", "false")

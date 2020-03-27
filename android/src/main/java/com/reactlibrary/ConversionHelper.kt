@@ -19,12 +19,7 @@ object ConversionHelper {
 
 
         val attachments = zipThree(attachmentNames, attachmentPaths, attachmentTypes)
-                .map {
-                    Attachment(
-                            name = it.first,
-                            path = it.second,
-                            type = it.third)
-                }
+                .map { Attachment(name = it.first, path = it.second, type = it.third) }
 
         return Mail(
                 from = from, recipients = recipients, subject = subject,
@@ -39,9 +34,11 @@ object ConversionHelper {
     }
 
     fun toMailConfig(maildata: ReadableMap): MailConfig {
-        val mailhost = maildata.getString("mailhost")!!
-        val port = maildata.getString("port")!!
-        val ssl = maildata.getBoolean("ssl")
+
+        val mailhost = maildata.getStringSilent("mailhost")
+        val port = maildata.getIntSilent("port")
+        val ssl = maildata.getBooleanSilent("ssl")
+
         return MailConfig(mailhost = mailhost, port = port, ssl = ssl)
     }
 
