@@ -64,9 +64,6 @@ class MailSender(val username: String, val password: String, mailconfig: MailCon
         val source: DataSource = FileDataSource(attachment.path)
         messageBodyPart.dataHandler = DataHandler(source)
         messageBodyPart.fileName = attachment.name
-        if (attachment.type == "img") {
-            messageBodyPart.setHeader("Content-ID", "<image>")
-        }
         this.addBodyPart(messageBodyPart)
     }
 
