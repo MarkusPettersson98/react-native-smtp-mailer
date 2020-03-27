@@ -3,6 +3,7 @@ package com.reactlibrary
 import com.facebook.react.bridge.ReadableMap
 import com.mailercore.Attachment
 import com.mailercore.Mail
+import com.mailercore.MailConfig
 import com.mailercore.MailSender
 
 object ConversionHelper {
@@ -32,15 +33,16 @@ object ConversionHelper {
     }
 
     fun toMailSender(maildata: ReadableMap): MailSender {
+        val username = maildata.getString("username")!!
+        val password = maildata.getString("password")!!
+        return MailSender(username = username, password = password, mailconfig = toMailConfig(maildata))
+    }
+
+    fun toMailConfig(maildata: ReadableMap): MailConfig {
         val mailhost = maildata.getString("mailhost")!!
         val port = maildata.getString("port")!!
         val ssl = maildata.getBoolean("ssl")
-        val username = maildata.getString("username")!!
-        val password = maildata.getString("password")!!
-        return MailSender(
-                mailhost = mailhost, port = port, ssl = ssl,
-                username = username, password = password
-        )
+        return MailConfig(mailhost = mailhost, port = port, ssl = ssl)
     }
 
     private fun <A, B, C> zipThree(list1: List<A>, list2: List<B>, list3: List<C>): List<Triple<A, B, C>> {

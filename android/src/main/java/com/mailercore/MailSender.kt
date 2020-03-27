@@ -1,13 +1,14 @@
 package com.mailercore
 
+import com.mailercore.internals.PropertiesProvider
+import com.mailercore.internals.SecurityProvider
 import java.util.*
 import java.security.*
 import javax.activation.*
 import javax.mail.*
 import javax.mail.internet.*
 
-class MailSender(val mailhost: String, val username: String, val password: String, val port: String,
-                 val ssl: Boolean) : Authenticator() {
+class MailSender(val username: String, val password: String, mailconfig: MailConfig) : Authenticator() {
 
     companion object {
         @JvmStatic
@@ -15,10 +16,9 @@ class MailSender(val mailhost: String, val username: String, val password: Strin
     }
 
     private val session: Session
-    private val properties: Properties
+    private val properties: Properties = PropertiesProvider(mailconfig).initProps()
 
     init {
-        properties = initProps()
         session = Session.getDefaultInstance(properties, this)
     }
 
@@ -36,7 +36,7 @@ class MailSender(val mailhost: String, val username: String, val password: Strin
         var messageBodyPart: BodyPart = MimeBodyPart()
         val multipart = MimeMultipart()
 
-        message.setFrom(InternetAddress(mail.from, ""))
+        message.setFrom(InternetAddress(mail.from))
         message.subject = mail.subject
         message.sentDate = Date()
         messageBodyPart.setContent(mail.body, "text/html; charset=utf-8")
@@ -70,22 +70,6 @@ class MailSender(val mailhost: String, val username: String, val password: Strin
     }
 
 
-    private fun initProps(): Properties {
-        val properties = Properties()
-        properties.setProperty("mail.transport.protocol", "smtp")
-        properties.setProperty("mail.host", mailhost)
-        properties.setProperty("mail.smtp.auth", "true")
-        properties.setProperty("mail.smtp.port", port)
-        properties.setProperty("mail.smtp.socketFactory.port", port)
-        if (ssl) {
-            properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory")
-        } else {
-            properties.setProperty("mail.smtp.starttls.enable", "true")
-        }
-        properties.setProperty("mail.smtp.socketFactory.fallback", "false")
-        properties.setProperty("mail.smtp.quitwait", "false")
 
-        return properties
-    }
 
 }

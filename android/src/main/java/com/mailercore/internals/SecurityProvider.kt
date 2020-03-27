@@ -1,4 +1,4 @@
-package com.mailercore
+package com.mailercore.internals
 
 import java.security.*
 
