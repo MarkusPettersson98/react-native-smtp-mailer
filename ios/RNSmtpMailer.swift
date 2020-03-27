@@ -18,17 +18,15 @@ class RNSmtpMailer : NSObject {
     
     @objc
     func sendMail(_ maildata: [String: Any],
-                                resolver resolve: @escaping (RCTPromiseResolveBlock),
-                                rejecter reject: @escaping (RCTPromiseRejectBlock)) -> Void {
-        
-        //resolve(["status":"SUCCESS"])
+                  resolver resolve: @escaping (RCTPromiseResolveBlock),
+                  rejecter reject: @escaping (RCTPromiseRejectBlock)) -> Void {
         
         // Get data
         let mail = toMail(maildata: maildata)
         let mailConfig = toMailConfig(maildata: maildata)
         
         
-        // Send email
+        // Configure SMTP-session
         let smtpSession = configureSession(mailConfig)
         
         let builder = MCOMessageBuilder()
@@ -45,9 +43,11 @@ class RNSmtpMailer : NSObject {
             .compactMap { MCOAttachment(data: $0.1, filename: $0.0) }
             .forEach { builder.addAttachment($0) }
         
+        // Create sendable email
         let rfc822Data = builder.data()
         let sendOperation = smtpSession.sendOperation(with: rfc822Data)
         
+        // Try to send the mail
         sendOperation?.start { (error) -> Void in
             if (error != nil) {
                 NSLog("Error sending email: \(String(describing: error))")
@@ -59,7 +59,6 @@ class RNSmtpMailer : NSObject {
             }
         }
  
-        
     }
     
 }
@@ -68,21 +67,27 @@ class RNSmtpMailer : NSObject {
 
 func toMail(maildata: [String : Any]) -> Mail {
     
-    let attachmentNames = maildata["attachmentNames"] as! [String]
-    let attachmentPaths = maildata["attachmentPaths"] as! [String]
-    let attachmentTypes = maildata["attachmentTypes"] as! [String]
+    let attachmentNames = RCTConvert.nsStringArray(maildata["attachmentNames"]) ?? [String]()
+    let attachmentPaths = RCTConvert.nsStringArray(maildata["attachmentPaths"]) ?? [String]()
+    let attachmentTypes = RCTConvert.nsStringArray(maildata["attachmentTypes"]) ?? [String]()
     
     let attachments: [Attachment] = zip(attachmentNames, zip(attachmentPaths, attachmentTypes))
         .map { Attachment(name: $0.0 , path: $0.1.0, type: $0.1.1) }
     
     // If bcc is nothing, just pass empty array
-    let bcc: [String] = maildata["bcc"] as? [String] ?? [String]()
+    let bcc: [String] = RCTConvert.nsStringArray(maildata["bcc"]) ?? [String]()
+    
+    // Required
+    let from: String = RCTConvert.nsString(maildata["from"])
+    let recipients: [String] = RCTConvert.nsStringArray(maildata["recipients"])
+    let subject: String = RCTConvert.nsString(maildata["subject"])
+    let body: String = RCTConvert.nsString(maildata["htmlBody"])
     
     return Mail(
-        from: maildata["from"] as! String,
-        recipients: maildata["recipients"] as! [String],
-        subject: maildata["subject"] as! String,
-        body: maildata["htmlBody"] as! String,
+        from: from,
+        recipients: recipients,
+        subject: subject,
+        body: body,
         bcc: bcc,
         attachments: attachments
     )
@@ -90,21 +95,30 @@ func toMail(maildata: [String : Any]) -> Mail {
 }
 
 func toMailConfig(maildata: [String : Any]) -> Mailconfig { // Maildata is a map from String to Any
+    
+    let username: String = RCTConvert.nsString(maildata["username"])
+    let password: String = RCTConvert.nsString(maildata["password"])
+    
+    let mailhost: String? = maildata["mailhost"] as! String?
+    let port: UInt32? = maildata["port"] as! UInt32?
+    
     return Mailconfig(
-        username: maildata["username"] as! String,
-        password: maildata["password"] as! String,
-        mailhost: maildata["mailhost"] as! String,
-        port: UInt32(maildata["port"] as! String) ?? 465,
-        ssl: maildata["ssl"] as! Bool)
+        username: username,
+        password: password,
+        mailhost: mailhost,
+        port: port)
+    
 }
 
-
+/*
+ Set default values and config settings for SMTP-session
+ **/
 func configureSession(_ mailConfig: Mailconfig) -> MCOSMTPSession {
     let smtpSession = MCOSMTPSession()
-    smtpSession.hostname = mailConfig.mailhost
     smtpSession.username = mailConfig.username
     smtpSession.password = mailConfig.password
-    smtpSession.port = mailConfig.port
+    smtpSession.hostname = mailConfig.mailhost ?? "smtp.gmail.com"
+    smtpSession.port = mailConfig.port ?? 465
     smtpSession.authType = MCOAuthType.saslPlain
     smtpSession.connectionType = MCOConnectionType.TLS
     return smtpSession

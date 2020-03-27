@@ -26,9 +26,8 @@ struct Attachment {
 struct Mailconfig {
     let username: String
     let password: String
-    let mailhost: String
-    let port: UInt32
-    let ssl: Bool
+    let mailhost: String?
+    let port: UInt32?
 }
 
 func getAttachMentData(attachment: Attachment) -> (String, Data)? {
