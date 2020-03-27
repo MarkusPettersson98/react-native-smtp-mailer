@@ -18,11 +18,6 @@ struct Mail {
     let attachments: [Attachment]
 }
 
-struct Attachment {
-    let name: String
-    let path: String
-}
-
 struct Mailconfig {
     let username: String
     let password: String
@@ -30,16 +25,27 @@ struct Mailconfig {
     let port: UInt32?
 }
 
-func getAttachMentData(attachment: Attachment) -> (String, Data)? {
-    var result: (String, Data)?;
+struct Attachment {
+    let name: String
+    let path: String
+}
+
+protocol MCOAttachable {
+  func intoAttachable() -> MCOAttachment?
+}
+
+extension Attachment : MCOAttachable  {
+  func intoAttachable() -> MCOAttachment? {
+    var result: MCOAttachment?;
     
     do {
-        let dataUrl = URL(fileURLWithPath: attachment.path);
+        let dataUrl = URL(fileURLWithPath: self.path);
         let data = try Data(contentsOf: dataUrl);
-        result = (attachment.name, data)
+        result = MCOAttachment(data: data, filename: self.name)
     }
     catch {
         result = nil
     }
     return result
+  }
 }
