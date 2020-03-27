@@ -1,85 +1,12 @@
+#import <React/RCTBridgeModule.h>
 
-#import "RNSmtpMailer.h"
-#import <React/RCTConvert.h>
-#import <Mailcore/Mailcore.h>
-@implementation RNSmtpMailer
+@interface RCT_EXTERN_MODULE(RNSmtpMailer, NSObject)
 
-- (dispatch_queue_t)methodQueue
-{
-    return dispatch_get_main_queue();
-}
-RCT_EXPORT_MODULE();
-RCT_EXPORT_METHOD(sendMail:(NSDictionary *)obj resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
-{
-    NSString *mailhost = [RCTConvert NSString:obj[@"mailhost"]];
-    NSString *port = [RCTConvert NSString:obj[@"port"]];
-    NSString *username = [RCTConvert NSString:obj[@"username"]];
-    NSString *password = [RCTConvert NSString:obj[@"password"]];
-    NSString *fromEmail = [RCTConvert NSString:obj[@"from"]];
-    NSArray *recipients = [RCTConvert NSArray:obj[@"recipients"]];
-    NSArray *bcc = [RCTConvert NSArray:obj[@"bcc"]];
-    NSString *subject = [RCTConvert NSString:obj[@"subject"]];
-    NSString *body = [RCTConvert NSString:obj[@"htmlBody"]];
-    NSArray *attachmentPaths = [RCTConvert NSArray:obj[@"attachmentPaths"]];
-    NSArray *attachmentNames = [RCTConvert NSArray:obj[@"attachmentNames"]];
-    NSArray *attachmentTypes = [RCTConvert NSArray:obj[@"attachmentTypes"]];
-    NSNumber *portNumber = [NSNumber numberWithLongLong:port.longLongValue];
-    NSUInteger portInteger = portNumber.unsignedIntegerValue;
-    
-    MCOSMTPSession *smtpSession = [[MCOSMTPSession alloc] init];
-    smtpSession.hostname = mailhost;
-    smtpSession.port = portInteger;
-    smtpSession.username = username;
-    smtpSession.password = password;
-    smtpSession.authType = MCOAuthTypeSASLPlain;
-    smtpSession.connectionType = MCOConnectionTypeTLS;
-    MCOMessageBuilder *builder = [[MCOMessageBuilder alloc] init];
-    MCOAddress *from = [MCOAddress addressWithDisplayName:nil
-                                                mailbox:fromEmail];
-    [[builder header] setFrom:from];
-    
-
-    NSMutableArray *to = [[NSMutableArray alloc] init];    
-    for(NSString *toAddress in recipients) {
-        MCOAddress *newAddress = [MCOAddress addressWithMailbox:toAddress];
-        [to addObject:newAddress];
-    }
-    // Set recipients in mailcore
-    [[builder header] setTo:to];
-
-
-
-
-    NSMutableArray *bccs = [[NSMutableArray alloc] init];
-    for(NSString *bccAddress in bcc) {
-        MCOAddress *newAddress = [MCOAddress addressWithMailbox:bccAddress];
-        [bccs addObject:newAddress];
-    }
-    // Set bccs in mailcore
-    [[builder header] setBcc:bccs];
-    
-
-    [[builder header] setSubject:subject];
-    [builder setHTMLBody:body];
-    int size = [attachmentPaths count];
-    for(int i = 0; i < size; i++){
-        [builder addAttachment:[MCOAttachment attachmentWithContentsOfFile:[attachmentPaths objectAtIndex:i]]];
-    }
-    NSData * rfc822Data = [builder data];
-    
-    MCOSMTPSendOperation *sendOperation =
-    [smtpSession sendOperationWithData:rfc822Data];
-    [sendOperation start:^(NSError *error) {
-    if(error) {
-      NSLog(@"Error sending email: %@", error);
-      reject(@"Error",error.localizedDescription,error);
-    } else {
-      NSLog(@"Successfully sent email!");
-      NSDictionary *result = @{@"status": @"SUCCESS"};
-      resolve(result);
-    }
-    }];
-}
+RCT_EXTERN_METHOD(
+                  sendMail: (NSDictionary *)maildata
+                  resolver: (RCTPromiseResolveBlock)resolve
+                  rejecter: (RCTPromiseRejectBlock)reject
+                  )
 
 @end
+

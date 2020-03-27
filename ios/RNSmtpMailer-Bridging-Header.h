@@ -3,4 +3,5 @@
 //
 
 #import <React/RCTConvert.h>
+#import <React/RCTBridgeModule.h>
 #import <Mailcore/Mailcore.h>
