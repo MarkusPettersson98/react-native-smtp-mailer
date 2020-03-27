@@ -21,7 +21,6 @@ struct Mail {
 struct Attachment {
     let name: String
     let path: String
-    let type: String
 }
 
 struct Mailconfig {

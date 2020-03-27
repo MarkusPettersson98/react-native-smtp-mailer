@@ -76,10 +76,10 @@ func toMail(maildata: [String : Any]) -> Mail {
     
     let attachmentNames = RCTConvert.nsStringArray(maildata["attachmentNames"]) ?? [String]()
     let attachmentPaths = RCTConvert.nsStringArray(maildata["attachmentPaths"]) ?? [String]()
-    let attachmentTypes = RCTConvert.nsStringArray(maildata["attachmentTypes"]) ?? [String]()
+
     
-    let attachments: [Attachment] = zip(attachmentNames, zip(attachmentPaths, attachmentTypes))
-        .map { Attachment(name: $0.0 , path: $0.1.0, type: $0.1.1) }
+    let attachments: [Attachment] = zip(attachmentNames, attachmentPaths)
+        .map {(name, path) in Attachment(name: name, path: path) }
     
     // Optional arguments
     let cc: [String]? = maildata["cc"] as! [String]?
