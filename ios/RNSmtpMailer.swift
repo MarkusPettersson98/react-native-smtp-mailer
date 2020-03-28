@@ -74,8 +74,9 @@ class RNSmtpMailer : NSObject {
 func toMail(maildata: [String : Any]) -> Mail {
     
     let attachmentNames = RCTConvert.nsStringArray(maildata["attachmentNames"]) ?? [String]()
-    let attachmentPaths = RCTConvert.nsStringArray(maildata["attachmentPaths"]) ?? [String]()
-
+    let attachmentPaths =
+        (RCTConvert.nsStringArray(maildata["attachmentPaths"]) ?? [String]())
+        .map { path in URL(fileURLWithPath: path) }
     
     let attachments: [Attachment] = zip(attachmentNames, attachmentPaths)
         .map {(name, path) in Attachment(name: name, path: path) }
