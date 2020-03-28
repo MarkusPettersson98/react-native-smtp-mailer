@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		284DF5D2242ECF9E008E6295 /* ConversionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284DF5D1242ECF9E008E6295 /* ConversionHelper.swift */; };
 		288B6731242D5D9300C0181C /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 288B671A242D5D0400C0181C /* libReact.a */; };
 		288B6735242D623D00C0181C /* RNSmtpMailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 288B6734242D623D00C0181C /* RNSmtpMailer.swift */; };
 		288B6744242D65CA00C0181C /* MailSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 288B6743242D65CA00C0181C /* MailSender.swift */; };
@@ -114,6 +115,7 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNSmtpMailer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNSmtpMailer.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		284DF5D1242ECF9E008E6295 /* ConversionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionHelper.swift; sourceTree = "<group>"; };
 		288B670A242D5D0400C0181C /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		288B6733242D623C00C0181C /* RNSmtpMailer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNSmtpMailer-Bridging-Header.h"; sourceTree = "<group>"; };
 		288B6734242D623D00C0181C /* RNSmtpMailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNSmtpMailer.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				284DF5D1242ECF9E008E6295 /* ConversionHelper.swift */,
 				288B6743242D65CA00C0181C /* MailSender.swift */,
 				288B6734242D623D00C0181C /* RNSmtpMailer.swift */,
 				B3E7B5881CC2AC0600A0062D /* RNSmtpMailer.h */,
@@ -336,6 +339,7 @@
 				288B6744242D65CA00C0181C /* MailSender.swift in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNSmtpMailer.m in Sources */,
 				288B6735242D623D00C0181C /* RNSmtpMailer.swift in Sources */,
+				284DF5D2242ECF9E008E6295 /* ConversionHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
