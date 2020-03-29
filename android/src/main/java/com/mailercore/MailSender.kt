@@ -63,7 +63,8 @@ class MailSender(val username: String, val password: String, mailconfig: MailCon
         val messageBodyPart = MimeBodyPart()
         val source: DataSource = FileDataSource(attachment.path)
         messageBodyPart.dataHandler = DataHandler(source)
-        messageBodyPart.fileName = attachment.name
+        messageBodyPart.fileName = attachment.name ?: source.name
+        messageBodyPart.setHeader("Content-Type", source.contentType)
         this.addBodyPart(messageBodyPart)
     }
 

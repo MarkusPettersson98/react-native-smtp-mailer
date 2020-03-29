@@ -1,25 +1,21 @@
 package com.reactlibrary
 
 import com.facebook.react.bridge.ReadableMap
-import com.mailercore.Attachment
-import com.mailercore.Mail
-import com.mailercore.MailConfig
-import com.mailercore.MailSender
+import com.mailercore.*
 
 object ConversionHelper {
     fun toMail(maildata: ReadableMap): Mail {
         val from = maildata.getString("from")!!
-        val recipients = maildata.getStringList("recipients")
+        val recipients = maildata.getArray("recipients")!!.toStringIterable().toList()
         val subject = maildata.getString("subject")!!
         val body = maildata.getString("htmlBody")!!
         val cc: List<String> = maildata.getStringList("cc")
         val bcc: List<String> = maildata.getStringList("bcc")
-        val attachmentPaths = maildata.getStringList("attachmentPaths")
-        val attachmentNames = maildata.getStringList("attachmentNames")
-
-
-        val attachments = attachmentNames.zip(attachmentPaths)
-                .map { Attachment(name = it.first, path = it.second) }
+        val attachments = maildata.getMapList("attachments").map {
+            val path: String = it.getString("path")!!
+            val name: String? = it.getNullableString("name")
+            Attachment(path = path, name = name)
+        }
 
         return Mail(
                 from = from, recipients = recipients, subject = subject,
@@ -35,9 +31,9 @@ object ConversionHelper {
 
     fun toMailConfig(maildata: ReadableMap): MailConfig {
 
-        val mailhost = maildata.getStringSilent("mailhost")
-        val port = maildata.getIntSilent("port")
-        val ssl = maildata.getBooleanSilent("ssl")
+        val mailhost = maildata.getNullableString("mailhost")
+        val port = maildata.getNullableInt("port")
+        val ssl = maildata.getNullableBoolean("ssl")
 
         return MailConfig(mailhost = mailhost, port = port, ssl = ssl)
     }

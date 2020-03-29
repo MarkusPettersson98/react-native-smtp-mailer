@@ -1,17 +1,15 @@
 package com.reactlibrary
 
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReadableMap
-
+import com.facebook.react.bridge.*
 
 fun ReadableMap.getStringList(key: String): List<String> {
     return if (this.hasKey(key)) {
-        this.getArray(key)?.toIterable()?.toList().orEmpty()
+        this.getArray(key)?.toStringIterable()?.toList().orEmpty()
     } else
         emptyList();
 }
 
-fun ReadableArray.toIterable(): Iterable<String> {
+fun ReadableArray.toStringIterable(): Iterable<String> {
     val size = this.size()
     val accumulator = mutableListOf<String>()
     for (index in size - 1 downTo 0) {
@@ -21,11 +19,28 @@ fun ReadableArray.toIterable(): Iterable<String> {
     return accumulator
 }
 
+fun ReadableMap.getMapList(key: String): List<ReadableMap> {
+    return if (this.hasKey(key)) {
+        this.getArray(key)?.toMapIterable()?.toList().orEmpty()
+    } else
+        emptyList();
+}
+
+fun ReadableArray.toMapIterable(): Iterable<ReadableMap> {
+    val size = this.size()
+    val accumulator = mutableListOf<ReadableMap>()
+    for (index in size - 1 downTo 0) {
+        val value = this.getMap(index)
+        value?.let { accumulator.add(it) }
+    }
+    return accumulator
+}
+
 /**
  * This get method does not throw a runtime exception if key does not exist,
  * but rather returns a nullable @param String?
  */
-fun ReadableMap.getStringSilent(key: String): String? {
+fun ReadableMap.getNullableString(key: String): String? {
     return when (this.hasKey(key)) {
         true -> this.getString(key)
         else -> null
@@ -36,7 +51,7 @@ fun ReadableMap.getStringSilent(key: String): String? {
  * This get method does not throw a runtime exception if key does not exist,
  * but rather returns a nullable @param Int?
  */
-fun ReadableMap.getIntSilent(key: String): Int? {
+fun ReadableMap.getNullableInt(key: String): Int? {
     return when (this.hasKey(key)) {
         true -> this.getInt(key)
         else -> null
@@ -47,7 +62,7 @@ fun ReadableMap.getIntSilent(key: String): Int? {
  * This get method does not throw a runtime exception if key does not exist,
  * but rather returns a nullable @param Boolean?
  */
-fun ReadableMap.getBooleanSilent(key: String): Boolean? {
+fun ReadableMap.getNullableBoolean(key: String): Boolean? {
     return when (this.hasKey(key)) {
         true -> this.getBoolean(key)
         else -> null
