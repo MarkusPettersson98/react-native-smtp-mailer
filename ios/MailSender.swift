@@ -26,8 +26,8 @@ struct Mailconfig {
 }
 
 struct Attachment {
-    let name: String
     let path: URL
+    let name: String?
 }
 
 protocol MCOAttachable {
@@ -36,8 +36,11 @@ protocol MCOAttachable {
 
 extension Attachment : MCOAttachable  {
   func intoAttachable() -> MCOAttachment? {
+    if let name = self.name, let data = try? Data(contentsOf: self.path) {
+        return MCOAttachment(data: data, filename: name)
+    }
     if let data = try? Data(contentsOf: self.path) {
-        return MCOAttachment(data: data, filename: self.name)
+        return MCOAttachment(data:data, filename: self.path.lastPathComponent)
     }
     return nil
   }

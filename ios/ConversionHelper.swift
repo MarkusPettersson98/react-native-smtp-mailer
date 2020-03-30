@@ -18,13 +18,11 @@ func toMail(maildata: [String : Any]) -> Mail {
     let body: String = RCTConvert.nsString(maildata["htmlBody"])
     
     // Optional arguments
-    let attachmentNames = RCTConvert.nsStringArray(maildata["attachmentNames"]) ?? [String]()
-    let attachmentPaths =
-        (RCTConvert.nsStringArray(maildata["attachmentPaths"]) ?? [String]())
-        .map { path in URL(fileURLWithPath: path) }
-    
-    let attachments: [Attachment] = zip(attachmentNames, attachmentPaths)
-        .map {(name, path) in Attachment(name: name, path: path) }
+    let attachments = ((maildata["attachments"]) as! [NSDictionary]? ?? [])
+                        .map { (attachmentObject) -> Attachment in
+                            let path = attachmentObject["path"] as! String
+                            let name = attachmentObject["name"] as! String?
+                            return Attachment(path: URL(fileURLWithPath: path), name: name)}
     
     let cc: [String]? = maildata["cc"] as! [String]?
     let bcc: [String]? = maildata["bcc"] as! [String]?
