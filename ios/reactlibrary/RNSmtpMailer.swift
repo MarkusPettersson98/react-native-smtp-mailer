@@ -41,7 +41,7 @@ class RNSmtpMailer : NSObject {
         builder.header.subject = mail.subject
         builder.htmlBody = mail.body
         // Add attachments
-        mail.attachments
+        mail.attachments?
             .compactMap { attachment in attachment.intoAttachable() }
             .forEach { builder.addAttachment($0) }
         

@@ -15,5 +15,5 @@ struct Mail {
     let body: String
     let cc: [String]?
     let bcc: [String]?
-    let attachments: [Attachment]
+    let attachments: [Attachment]?
 }

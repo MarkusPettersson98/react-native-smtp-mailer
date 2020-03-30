@@ -11,11 +11,8 @@ object ConversionHelper {
         val body = maildata.getString("htmlBody")!!
         val cc: List<String> = maildata.getStringList("cc")
         val bcc: List<String> = maildata.getStringList("bcc")
-        val attachments = maildata.getMapList("attachments").map {
-            val path: String = it.getString("path")!!
-            val name: String? = it.getNullableString("name")
-            Attachment(path = path, name = name)
-        }
+        val attachments = maildata.getMapList("attachments")
+                .map { toAttachment(it) }
 
         return Mail(
                 from = from, recipients = recipients, subject = subject,
@@ -30,12 +27,17 @@ object ConversionHelper {
     }
 
     fun toMailConfig(maildata: ReadableMap): MailConfig {
-
         val mailhost = maildata.getNullableString("mailhost")
         val port = maildata.getNullableInt("port")
         val ssl = maildata.getNullableBoolean("ssl")
 
         return MailConfig(mailhost = mailhost, port = port, ssl = ssl)
+    }
+
+    fun toAttachment(attachmentObject: ReadableMap): Attachment {
+        val path: String = attachmentObject.getString("path")!!
+        val name: String? = attachmentObject.getNullableString("name")
+        return Attachment(path = path, name = name)
     }
 
 }

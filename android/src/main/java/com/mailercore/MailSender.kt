@@ -47,7 +47,7 @@ class MailSender(val username: String, val password: String, mailconfig: MailCon
         mail.cc?.map { InternetAddress(it) }.also { message.addRecipients(Message.RecipientType.CC, it?.toTypedArray()) }
         mail.bcc?.map { InternetAddress(it) }.also { message.addRecipients(Message.RecipientType.BCC, it?.toTypedArray()) }
         // Add any attachments
-        multipart.addAttachments(mail.attachments)
+        mail.attachments?.let { multipart.addAttachments(it) }
 
         message.setContent(multipart)
         message.saveChanges()
