@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
                    DESC
   s.homepage     = "https://github.com/markuspettersson98/react-native-smtp-mailer"
   s.license      = { :type => "MIT", :file => "LICENSE" }
-  s.author             = { "author" => "angelos3lex, Markus Pettersson" }
+  s.author             = { "author" => "Markus Pettersson, angelos3lex" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/markuspettersson98/react-native-smtp-mailer.git", :tag => "master" }
   s.source_files  = "*.{h,m,swift}"
