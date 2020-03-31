@@ -15,6 +15,8 @@ Pod::Spec.new do |s|
   s.author             = { "author" => "Markus Pettersson, angelos3lex" }
   s.platform     = :ios, "7.0"
   s.source       = { :git => "https://github.com/markuspettersson98/react-native-smtp-mailer.git", :tag => "master" }
+  s.swift_version = "5.0"
+
   s.source_files  = "*.{h,m,swift}"
   s.requires_arc = true
 
